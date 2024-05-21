@@ -2,30 +2,31 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-@st.cache
-def load_data(file_path):
-    return pd.read_csv(file_path)
-
-
-def show_chart(data):
-    st.subheader("Gráfico a partir do arquivo CSV")
-    st.line_chart(data)
-
 def main():
-    st.title("Exibindo um gráfico a partir de um arquivo CSV")
+    st.title("Gráfico a partir de um arquivo CSV")
 
-    uploaded_file = st.file_uploader("Escolha um arquivo CSV", type=["csv"])
-
+    # Carrega o arquivo CSV
+    uploaded_file = st.file_uploader("Mobile_games.csv", type="csv")
+    
     if uploaded_file is not None:
-       
-        data = load_data(uploaded_file)
+        # Lê o arquivo CSV
+        df = pd.read_csv(uploaded_file)
+        
+        st.write("Exibindo os primeiros registros do arquivo:")
+        st.write(df.head())
 
-       
-        st.write("Dados do arquivo CSV:")
-        st.write(data.head())
+        # Seleciona as variáveis para o gráfico
+        column1 = st.selectbox("Game Title", df.columns)
+        column2 = st.selectbox("Player count", df.columns)
 
-       
-        show_chart(data)
+        # Plota o gráfico
+        plt.figure(figsize=(10, 6))
+        plt.scatter(df[column1], df[column2])
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.title(f"Gráfico de dispersão entre {column1} e {column2}")
+        st.pyplot()
 
 if __name__ == "__main__":
     main()
+
